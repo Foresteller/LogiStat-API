@@ -14,81 +14,78 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         DB::disableQueryLog();
-
-        User::factory()->count(50)->create();
-        Category::factory()->count(10)->create();
-        Warehouse::factory()->count(5)->create();
-        Product::factory()->count(500)->create();
-
-        $userIds = User::pluck('id')->toArray();
-        $warehouseIds = Warehouse::pluck('id')->toArray();
-        $products = Product::all();
-
-        $nowString = date('Y-m-d H:i:s');
-
+        $users = User::factory()->count(50)->create();
+        $warehouses = Warehouse::factory()->count(10)->create();
+        $categories = Category::factory()->count(5)->create();
+        $products = Product::factory()
+            ->count(500)
+            ->create([
+                    'category_id' => fn() => $categories->pluck('id')->random()
+                ]
+            );
+        $productsPrice = $products->pluck('price', 'id')->toArray();
+        $warehouseIds = $warehouses->pluck('id')->toArray();
+        $productIds = $products->pluck('id')->toArray();
+        $usersIds = $users->pluck('id')->toArray();
+        $timeStamps = now()->toDateTimeString();
         $stocksData = [];
-        foreach ($warehouseIds as $wId) {
-            foreach ($products as $product) {
+        foreach ($warehouseIds as $warehouseId) {
+            foreach ($productIds as $productId) {
                 $stocksData[] = [
-                    'warehouse_id' => $wId,
-                    'product_id' => $product->id,
-                    'quantity' => rand(10, 1000),
-                    'created_at' => $nowString,
-                    'updated_at' => $nowString,
+                    'warehouse_id' => $warehouseId,
+                    'product_id' => $productId,
+                    'quantity' => rand(1, 3),
+                    'created_at' => $timeStamps,
+                    'updated_at' => $timeStamps
                 ];
             }
         }
         DB::table('stocks')->insert($stocksData);
 
-        $totalOrders = 50000;
-        $chunkSize = 1000;
-        $statuses = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
-
-        for ($i = 0; $i < $totalOrders; $i += $chunkSize) {
-            $ordersChunk = [];
-            $orderItemsChunk = [];
-
-            for ($j = 0; $j < $chunkSize; $j++) {
-                $orderId = $i + $j + 1;
-                $warehouseId = $warehouseIds[array_rand($warehouseIds)];
-                $status = $statuses[array_rand($statuses)];
-
-                $randomDaysAgo = rand(1, 365);
-                $orderCreatedAt = date('Y-m-d H:i:s', strtotime("-$randomDaysAgo days"));
-
-                $ordersChunk[] = [
-                    'id' => $orderId,
-                    'user_id' => $userIds[array_rand($userIds)],
-                    'warehouse_id' => $warehouseId,
-                    'status' => $status,
-                    'total_amount' => 0,
-                    'created_at' => $orderCreatedAt,
-                    'updated_at' => $nowString,
-                ];
-
-                $randomProducts = $products->random(rand(1, 3));
+        $batchChunks = 5000;
+        $totalChunks = 50000;
+        $statuses = [
+            'pending',
+            'processing',
+            'shipped',
+            'delivered',
+            'cancelled'
+        ];
+        for ($i = 0; $i < $totalChunks; $i += $batchChunks) {
+            $batchOrders = [];
+            $batchOrderItems = [];
+            for ($j = 0; $j < $batchChunks; $j++) {
                 $orderTotal = 0;
+                $itemsCount = rand(1, 3);
+                $pickedProducts = (array)array_rand($productIds, $itemsCount);
+                $orderId = $i + $j + 1;
+                $createdAt = now()->subDays(rand(1, 365))->toDateTimeString();
+                foreach ($pickedProducts as $pIndex) {
+                    $count = rand(1, 5);
+                    $price = $productsPrice[$productIds[$pIndex]];
+                    $orderTotal += $count * $price;
 
-                foreach ($randomProducts as $product) {
-                    $qty = rand(1, 5);
-                    $price = $product->price;
-                    $orderTotal += $price * $qty;
-
-                    $orderItemsChunk[] = [
+                    $batchOrderItems[] = [
+                        'product_id' => $productIds[$pIndex],
                         'order_id' => $orderId,
-                        'product_id' => $product->id,
-                        'count' => $qty,
+                        'count' => $count,
                         'price' => $price,
-                        'created_at' => $orderCreatedAt,
-                        'updated_at' => $nowString,
+                        'created_at' => $createdAt,
+                        'updated_at' => $createdAt
                     ];
                 }
-
-                $ordersChunk[$j]['total_amount'] = $orderTotal;
+                $batchOrders[] = [
+                    'id' => $orderId,
+                    'user_id' => $usersIds[array_rand($usersIds)],
+                    'warehouse_id' => $warehouseIds[array_rand($warehouseIds)],
+                    'status' => $statuses[array_rand($statuses)],
+                    'total_amount' => $orderTotal,
+                    'created_at'   => $createdAt,
+                    'updated_at'   => $createdAt,
+                ];
             }
-
-            DB::table('orders')->insert($ordersChunk);
-            DB::table('order_items')->insert($orderItemsChunk);
+            DB::table('orders')->insert($batchOrders);
+            DB::table('order_items')->insert($batchOrderItems);
         }
     }
 }
