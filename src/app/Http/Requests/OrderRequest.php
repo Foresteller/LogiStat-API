@@ -23,11 +23,11 @@ class OrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => 'require|exists:user,id',
-            'warehouse_id' => 'required|exists:warehouse,id',
+            'user_id' => 'required|exists:users,id',
+            'warehouse_id' => 'required|exists:warehouses,id',
             'items' => 'required|array|min:1',
             'items.*.product_id' => 'required|exists:products,id',
-            'items.*.quantity' => 'required|integer|min:1'
+            'items.*.count' => 'required|integer|min:1'
         ];
     }
 }

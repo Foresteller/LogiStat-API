@@ -21,13 +21,13 @@ class OrderService
                 function ($item) use ($prices) {
                     return [
                         'product_id' => $item['product_id'],
-                        'quantity' => $item['quantity'],
+                        'count' => $item['count'],
                         'price' => $prices[$item['product_id']] ?? 0
                     ];
                 }
             );
             $totalAmount = $items->sum(
-                fn($item) => $item['quantity'] * $item['price']
+                fn($item) => $item['count'] * $item['price']
             );
 
             $order = Order::create([
