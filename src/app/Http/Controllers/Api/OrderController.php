@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\OrderRequest;
 use App\Http\Services\OrderService;
 use Illuminate\Http\JsonResponse;
@@ -12,7 +13,7 @@ class OrderController extends Controller
     {
         $this->service = $service;
     }
-    public function store(OrderRequest $request)
+    public function store(OrderRequest $request): JsonResponse
     {
         $data = $request->validated();
         $order = $this->service->createOrder($data);
