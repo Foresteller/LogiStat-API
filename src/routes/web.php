@@ -2,4 +2,4 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/order', [\App\Http\Controllers\OrderController::class, 'createOrder']);
+Route::get('/order', [\App\Http\Controllers\Api\OrderController::class, 'store']);
