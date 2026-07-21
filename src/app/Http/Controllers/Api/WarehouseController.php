@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Contracts\WarehouseCatalogInterface;
 use App\Http\Controllers\Controller;
 use App\Http\Services\WarehouseService;
 use Illuminate\Http\JsonResponse;
@@ -10,14 +11,14 @@ use Illuminate\Support\Facades\Cache;
 
 class WarehouseController extends Controller
 {
-    public function __construct(protected WarehouseService $service)
+    public function __construct(protected WarehouseCatalogInterface $service)
     {
     }
 
-    public function index()
+    public function index(): JsonResponse
     {
         $start = microtime(true);
-        $isCached = Cache::has('warehouse_catalog');
+        $isCached = $this->service->hasCache();
         $catalog = $this->service->getCatalog();
         $executionTime = microtime(true) - $start;
         return new JsonResponse([
