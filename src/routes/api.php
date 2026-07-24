@@ -6,7 +6,7 @@ use App\Http\Controllers\Api\WarehouseController;
 use App\Http\Services\WarehouseService;
 use Illuminate\Support\Facades\Route;
 
-Route::post('/order', [OrderController::class, 'store']);
+Route::post('/orders', [OrderController::class, 'store']);
 
 Route::get('/reports/top-products', [ReportController::class, 'getTopProducts']);
 

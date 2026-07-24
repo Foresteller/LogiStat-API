@@ -1,0 +1,214 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Logistat B2B Logistics API",
+        "description": "Production-ready REST API для управления складскими остатками",
+        "contact": {
+            "email": "developer@logistat.local"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8080",
+            "description": "Local Docker Environment"
+        }
+    ],
+    "paths": {
+        "/api/orders": {
+            "post": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Создание заказа(асинхронно)",
+                "operationId": "2123ba58dadb22bd6f2c8081af562230",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "user_id",
+                                    "warehouse_id",
+                                    "items"
+                                ],
+                                "properties": {
+                                    "user_id": {
+                                        "type": "integer",
+                                        "example": 8
+                                    },
+                                    "warehouse_id": {
+                                        "type": "integer",
+                                        "example": 8
+                                    },
+                                    "items": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "product_id": {
+                                                    "type": "integer",
+                                                    "example": 88
+                                                },
+                                                "count": {
+                                                    "type": "integer",
+                                                    "example": 7
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Заказ успешно создан и отправлен в очередь",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Order created successfully"
+                                        },
+                                        "order_id": {
+                                            "type": "integer",
+                                            "example": 7
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "example": "pending"
+                                        },
+                                        "total_amount": {
+                                            "type": "number",
+                                            "example": 8888.77
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибка валидации входящих данных"
+                    }
+                }
+            }
+        },
+        "/api/warehouses/catalog": {
+            "get": {
+                "tags": [
+                    "Warehouse"
+                ],
+                "summary": "Получение каталога складов с остатками товаров",
+                "description": "Возвращает полный список складов с имеющимися остатками товаров. Данные обрабатываются по паттерну Cache-Aside через Redis",
+                "operationId": "a94aaacf9f9091fffeabe2db418232b4",
+                "responses": {
+                    "200": {
+                        "description": "Каталог успешно получен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "source": {
+                                            "type": "string",
+                                            "example": "Redis (Cache Hit)"
+                                        },
+                                        "execution_time_ms": {
+                                            "type": "number",
+                                            "format": "float",
+                                            "example": 18.2
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 7
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Октябрьский"
+                                                    },
+                                                    "address": {
+                                                        "type": "string",
+                                                        "example": "г. Новосибирск, ул. Бориса Богаткова, д.17"
+                                                    },
+                                                    "stocks": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer",
+                                                                    "example": 87
+                                                                },
+                                                                "warehouse_id": {
+                                                                    "type": "integer",
+                                                                    "example": 8
+                                                                },
+                                                                "product_id": {
+                                                                    "type": "integer",
+                                                                    "example": 78
+                                                                },
+                                                                "quantity": {
+                                                                    "type": "integer",
+                                                                    "example": 7
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    },
+                                                    "product": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer",
+                                                                    "example": 17
+                                                                },
+                                                                "name": {
+                                                                    "type": "string",
+                                                                    "example": "headphones"
+                                                                },
+                                                                "sku": {
+                                                                    "type": "integer",
+                                                                    "example": "HEAD-PHONE-001"
+                                                                },
+                                                                "price": {
+                                                                    "type": "number",
+                                                                    "format": "float",
+                                                                    "example": 3999.99
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Orders",
+            "description": "Orders"
+        },
+        {
+            "name": "Warehouse",
+            "description": "Warehouse"
+        }
+    ]
+}
