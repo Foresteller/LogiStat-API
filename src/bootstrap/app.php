@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -38,6 +39,17 @@ return Application::configure(basePath: dirname(__DIR__))
                         'success' => false,
                         'message' => 'Resource or endpoint not found',
                     ], 404);
+                }
+            }
+        );
+
+        $exceptions->render(
+            function (AuthenticationException $exception, Request $request) {
+                if ($request->is('api/*')) {
+                    return new JsonResponse([
+                        'success' => false,
+                        'message' => 'Unauthenticated'
+                    ], 401);
                 }
             }
         );
