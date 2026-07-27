@@ -13,6 +13,6 @@ Route::get('/warehouses/catalog', [WarehouseController::class, 'index']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
-    Route::middleware('role:client,warehouse_admin')->post('/orders', [OrderController::class, 'store']);
+    Route::middleware('role:client')->post('/orders', [OrderController::class, 'store']);
     Route::middleware('role:warehouse_admin,manager')->get('/reports/top-products', [ReportController::class, 'getTopProducts']);
 });
