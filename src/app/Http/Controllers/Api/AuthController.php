@@ -22,7 +22,7 @@ class AuthController extends Controller
             return new JsonResponse([
                 'success' => false,
                 'message' => "Invalid credential provided."
-            ], 422);
+            ], 401);
         }
         $token = $user->createToken('api_token')->plainTextToken;
         return new JsonResponse([
