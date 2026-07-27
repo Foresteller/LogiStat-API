@@ -9,12 +9,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/warehouses/catalog', [WarehouseController::class, 'index']);
-Route::get('/reports/top-products', [ReportController::class, 'getTopProducts']);
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/orders', [OrderController::class, 'store']);
-
     Route::get('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
-
+    Route::middleware('role:client')->post('/orders', [OrderController::class, 'store']);
+    Route::middleware('role:warehouse_admin,manager')->get('/reports/top-products', [ReportController::class, 'getTopProducts']);
 });
