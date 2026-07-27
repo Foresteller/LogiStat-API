@@ -140,6 +140,7 @@
       <path value="$PROJECT_DIR$/src/vendor/swagger-api/swagger-ui" />
       <path value="$PROJECT_DIR$/src/vendor/darkaonline/l5-swagger" />
       <path value="$PROJECT_DIR$/src/vendor/zircote/swagger-php" />
+      <path value="$PROJECT_DIR$/src/vendor/laravel/sanctum" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.3" />
