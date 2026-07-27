@@ -1,11 +1,15 @@
 <?php
 
+use App\Http\Middleware\CheckRole;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Laravel\Sanctum\Http\Middleware\CheckAbilities;
+use Laravel\Sanctum\Http\Middleware\CheckForAnyAbility;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -16,8 +20,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->alias([
+            'role' => CheckRole::class
+        ]);
     })
+
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->render(
             function (ValidationException $e, Request $request) {
@@ -38,6 +45,17 @@ return Application::configure(basePath: dirname(__DIR__))
                         'success' => false,
                         'message' => 'Resource or endpoint not found',
                     ], 404);
+                }
+            }
+        );
+
+        $exceptions->render(
+            function (AuthenticationException $exception, Request $request) {
+                if ($request->is('api/*')) {
+                    return new JsonResponse([
+                        'success' => false,
+                        'message' => 'Unauthenticated'
+                    ], 401);
                 }
             }
         );
