@@ -8,7 +8,6 @@ use App\Models\Product;
 use App\Models\User;
 use App\Models\Warehouse;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
@@ -65,6 +64,19 @@ class OrderTest extends TestCase
         ]);
 
         Queue::assertPushed(ProcessOrderJob::class);
+    }
+
+    /**
+     * Тест: проверка на обязательные поля
+     */
+    public function test_client_cannot_create_order_without_required_fields()
+    {
+        $user = User::factory()->create(['role' => UserRole::CLIENT]);
+        $response = $this->actingAs($user, 'sanctum')->postJson('/api/orders',[]);
+        $response->assertStatus(422)->assertJson([
+            'success' => false,
+            'message' => 'The given data was invalid'
+        ]);
     }
 
     /**
