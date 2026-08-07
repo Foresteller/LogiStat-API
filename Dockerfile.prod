@@ -1,0 +1,43 @@
+#
+# Stage 1: Build Dependencies
+#
+FROM php:8.3-cli-alpine AS builder
+
+RUN apk add --no-cache zip unzip git postgresql-dev
+
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+WORKDIR /var/www
+
+COPY src/composer.json src/composer.lock ./
+
+RUN composer install \
+    --no-dev \
+    --no-interaction \
+    --no-plugins \
+    --no-scripts \
+    --prefer-dist \
+    --optimize-autoloader
+
+#
+# STAGE 2: Production Runtime
+#
+FROM php:8.3-fpm-alpine
+
+WORKDIR /var/www
+
+RUN apk add --no-cache libpq-dev \
+    && docker-php-ext-install pdo_pgsql bcmath opcache
+
+COPY --from=builder /var/www/vendor /var/www/vendor
+
+COPY src/ /var/www
+
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache \
+	&& chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+
+USER www-data
+
+EXPOSE 9000
+
+CMD ["php-fpm"]
