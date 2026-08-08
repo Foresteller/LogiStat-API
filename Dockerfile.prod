@@ -29,6 +29,8 @@ WORKDIR /var/www
 RUN apk add --no-cache libpq-dev \
     && docker-php-ext-install pdo_pgsql bcmath opcache
 
+COPY docker/php/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
+
 COPY --from=builder /var/www/vendor /var/www/vendor
 
 COPY src/ /var/www
