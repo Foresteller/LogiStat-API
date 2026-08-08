@@ -1,0 +1,10 @@
+.git
+src/.gitignore
+src/.env
+src/.phpunit.result.cache
+src/node_modules
+src/README.md
+docker/php/Dockerfile
+src/tests
+src/vendor
+src/storage
