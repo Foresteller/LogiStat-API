@@ -18,7 +18,7 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: secret_postgres
         options: >-
-          --health-cmd pg_ready
+          --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -37,8 +37,8 @@ jobs:
       - name: Setup PHP environment
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8:3
-          extensions: mbstring, pdo, pdo_pgsql, bcmath, json, ctype, tokeniz
+          php-version: 8.3
+          extensions: mbstring, pdo, pdo_pgsql, bcmath, json, ctype, tokenizer
           coverage: none
       - name: Install Dependencies
         run: composer install --prefer-dist --no-progress --no-interaction
