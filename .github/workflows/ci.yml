@@ -38,7 +38,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: 8.3
-          extensions: mbstring, pdo, pdo_pgsql, bcmath, json, ctype, tokenizer
+          extensions: mbstring, pdo, pdo_pgsql, bcmath, json, ctype, tokenizer,redis
           coverage: none
       - name: Install Dependencies
         run: composer install --prefer-dist --no-progress --no-interaction
