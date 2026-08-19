@@ -48,6 +48,8 @@ jobs:
           php artisan key:generate --env=testing
       - name: Check Code Style
         run: vendor/bin/pint --test
+      - name: Create Storage Folder
+        run: mkdir -p storage/framework/{sessions,views,cache} storage/logs
       - name: Run Test Suite
         env:
           DB_CONNECTION: pgsql
