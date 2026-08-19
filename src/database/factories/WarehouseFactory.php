@@ -18,8 +18,9 @@ class WarehouseFactory extends Factory
     public function definition(): array
     {
         $warehouses = ['Центральный склад', 'Склад Север', 'Склад Юг', 'Логистический склад', 'Склад Сибирь'];
+
         return [
-            'name' => $this->faker->randomElement($warehouses) . ' ' . $this->faker->buildingNumber(),
+            'name' => $this->faker->randomElement($warehouses).' '.$this->faker->buildingNumber(),
             'city' => $this->faker->city(),
             'address' => $this->faker->address(),
         ];

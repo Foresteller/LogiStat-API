@@ -4,8 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\Category;
 use App\Models\Product;
-use App\Models\Warehouse;
 use App\Models\User;
+use App\Models\Warehouse;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -20,8 +20,8 @@ class DatabaseSeeder extends Seeder
         $products = Product::factory()
             ->count(500)
             ->create([
-                    'category_id' => fn() => $categories->pluck('id')->random()
-                ]
+                'category_id' => fn () => $categories->pluck('id')->random(),
+            ]
             );
         $productsPrice = $products->pluck('price', 'id')->toArray();
         $warehouseIds = $warehouses->pluck('id')->toArray();
@@ -36,7 +36,7 @@ class DatabaseSeeder extends Seeder
                     'product_id' => $productId,
                     'quantity' => rand(1, 3),
                     'created_at' => $timeStamps,
-                    'updated_at' => $timeStamps
+                    'updated_at' => $timeStamps,
                 ];
             }
         }
@@ -49,7 +49,7 @@ class DatabaseSeeder extends Seeder
             'processing',
             'shipped',
             'delivered',
-            'cancelled'
+            'cancelled',
         ];
         for ($i = 0; $i < $totalChunks; $i += $batchChunks) {
             $batchOrders = [];
@@ -57,7 +57,7 @@ class DatabaseSeeder extends Seeder
             for ($j = 0; $j < $batchChunks; $j++) {
                 $orderTotal = 0;
                 $itemsCount = rand(1, 3);
-                $pickedProducts = (array)array_rand($productIds, $itemsCount);
+                $pickedProducts = (array) array_rand($productIds, $itemsCount);
                 $orderId = $i + $j + 1;
                 $createdAt = now()->subDays(rand(1, 365))->toDateTimeString();
                 foreach ($pickedProducts as $pIndex) {
@@ -71,7 +71,7 @@ class DatabaseSeeder extends Seeder
                         'count' => $count,
                         'price' => $price,
                         'created_at' => $createdAt,
-                        'updated_at' => $createdAt
+                        'updated_at' => $createdAt,
                     ];
                 }
                 $batchOrders[] = [
@@ -80,8 +80,8 @@ class DatabaseSeeder extends Seeder
                     'warehouse_id' => $warehouseIds[array_rand($warehouseIds)],
                     'status' => $statuses[array_rand($statuses)],
                     'total_amount' => $orderTotal,
-                    'created_at'   => $createdAt,
-                    'updated_at'   => $createdAt,
+                    'created_at' => $createdAt,
+                    'updated_at' => $createdAt,
                 ];
             }
             DB::table('orders')->insert($batchOrders);

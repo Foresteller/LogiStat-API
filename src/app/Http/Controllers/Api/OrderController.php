@@ -10,9 +10,7 @@ use OpenApi\Attributes as OA;
 
 class OrderController extends Controller
 {
-    public function __construct(protected OrderService $service)
-    {
-    }
+    public function __construct(protected OrderService $service) {}
 
     #[OA\Post(
         path: '/api/orders',
@@ -46,11 +44,11 @@ class OrderController extends Controller
                                     property: 'count',
                                     type: 'integer',
                                     example: 7
-                                )
+                                ),
                             ],
                             type: 'object'
                         ),
-                    )
+                    ),
                 ]
             ),
         ),
@@ -80,25 +78,26 @@ class OrderController extends Controller
                             property: 'total_amount',
                             type: 'number',
                             example: 8888.77
-                        )
+                        ),
                     ]
                 )
             ),
             new OA\Response(
                 response: 422,
                 description: 'Ошибка валидации входящих данных'
-            )
+            ),
         ]
     )]
     public function store(OrderRequest $request): JsonResponse
     {
         $data = $request->validated();
         $order = $this->service->createOrder($data);
+
         return new JsonResponse([
             'message' => 'Order created successfully and placed in queue.',
             'order_id' => $order->id,
             'status' => $order->status,
-            'total_amount' => $order->total_amount
+            'total_amount' => $order->total_amount,
         ], 201);
     }
 }

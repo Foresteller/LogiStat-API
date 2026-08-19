@@ -9,11 +9,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Warehouse extends Model
 {
     use HasFactory;
+
     protected $fillable = ['name', 'city', 'address'];
+
     public function stocks(): HasMany
     {
         return $this->hasMany(Stock::class);
     }
+
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);

@@ -8,9 +8,7 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Laravel\Sanctum\HasApiTokens;
 
 class AuthController extends Controller
 {
@@ -18,13 +16,14 @@ class AuthController extends Controller
     {
         $request->validated();
         $user = User::where('email', $request->email)->first();
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        if (! $user || ! Hash::check($request->password, $user->password)) {
             return new JsonResponse([
                 'success' => false,
-                'message' => "Invalid credential provided."
+                'message' => 'Invalid credential provided.',
             ], 401);
         }
         $token = $user->createToken('api_token')->plainTextToken;
+
         return new JsonResponse([
             'success' => true,
             'token_type' => 'Bearer',
@@ -32,23 +31,26 @@ class AuthController extends Controller
             'user' => [
                 'id' => $user->id,
                 'name' => $user->name,
-                'email' => $user->email
-            ]
+                'email' => $user->email,
+            ],
         ]);
     }
+
     public function logout(Request $request): JsonResponse
     {
         $request->user()->currentAccessToken()->delete();
+
         return new JsonResponse([
             'success' => true,
-            'message' => "Success logged out and token revoked."
+            'message' => 'Success logged out and token revoked.',
         ]);
     }
+
     public function me(Request $request): JsonResponse
     {
         return new JsonResponse([
             'success' => true,
-            'data' => new UserResource($request->user())
+            'data' => new UserResource($request->user()),
         ]);
     }
 }

@@ -22,19 +22,19 @@ class OrderService
                     return [
                         'product_id' => $item['product_id'],
                         'count' => $item['count'],
-                        'price' => $prices[$item['product_id']] ?? 0
+                        'price' => $prices[$item['product_id']] ?? 0,
                     ];
                 }
             );
             $totalAmount = $items->sum(
-                fn($item) => $item['count'] * $item['price']
+                fn ($item) => $item['count'] * $item['price']
             );
 
             $order = Order::create([
                 'user_id' => $data['user_id'],
                 'warehouse_id' => $data['warehouse_id'],
                 'status' => 'pending',
-                'total_amount' => $totalAmount
+                'total_amount' => $totalAmount,
             ]);
             $order->items()->createMany($items);
 

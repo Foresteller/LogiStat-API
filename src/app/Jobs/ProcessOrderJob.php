@@ -3,7 +3,6 @@
 namespace App\Jobs;
 
 use App\Contracts\WarehouseCatalogInterface;
-use App\Http\Services\WarehouseService;
 use App\Models\Order;
 use App\Models\Stock;
 use Illuminate\Bus\Queueable;
@@ -11,21 +10,19 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class ProcessOrderJob implements ShouldQueue
 {
-    use Queueable, Dispatchable, InteractsWithQueue, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
      * Create a new job instance.
      */
     public function __construct(
         protected Order $order,
-    ) {
-    }
+    ) {}
 
     /**
      * Execute the job.
@@ -35,7 +32,7 @@ class ProcessOrderJob implements ShouldQueue
         Log::info("Началась обработка заказа №{$this->order->id} в очереди");
         $this->order->load('items');
         try {
-            DB::transaction(function () use ($service) {
+            DB::transaction(function () {
                 foreach ($this->order->items as $item) {
                     $stock = Stock::where(
                         'warehouse_id',
@@ -45,7 +42,7 @@ class ProcessOrderJob implements ShouldQueue
                         ->lockForUpdate()
                         ->first();
 
-                    if (!$stock || $stock->quantity < $item->count) {
+                    if (! $stock || $stock->quantity < $item->count) {
                         throw new \Exception(
                             "Недостаточно товара с ID {$item->product_id} на складе."
                         );
@@ -61,7 +58,7 @@ class ProcessOrderJob implements ShouldQueue
         } catch (\Exception $exception) {
             $this->order->update(['status' => 'cancelled']);
             Log::warning(
-                "Заказ №{$this->order->id} отменен: " . $exception->getMessage()
+                "Заказ №{$this->order->id} отменен: ".$exception->getMessage()
             );
         }
     }

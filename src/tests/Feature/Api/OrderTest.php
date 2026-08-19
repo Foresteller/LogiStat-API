@@ -23,7 +23,7 @@ class OrderTest extends TestCase
         $response = $this->postJson('/api/orders', []);
         $response->assertStatus(401)->assertJson([
             'success' => false,
-            'message' => 'Unauthenticated'
+            'message' => 'Unauthenticated',
         ]);
     }
 
@@ -44,23 +44,23 @@ class OrderTest extends TestCase
             'items' => [
                 [
                     'product_id' => $product->id,
-                    'count' => 8
-                ]
-            ]
+                    'count' => 8,
+                ],
+            ],
         ]);
 
         $response->assertStatus(201)->assertJsonStructure([
             'message',
             'order_id',
             'status',
-            'total_amount'
+            'total_amount',
         ]);
 
         $this->assertDatabaseHas('orders', [
             'user_id' => $user->id,
             'warehouse_id' => $warehouse->id,
             'status' => 'pending',
-            'total_amount' => 8000.00
+            'total_amount' => 8000.00,
         ]);
 
         Queue::assertPushed(ProcessOrderJob::class);
@@ -72,10 +72,10 @@ class OrderTest extends TestCase
     public function test_client_cannot_create_order_without_required_fields()
     {
         $user = User::factory()->create(['role' => UserRole::CLIENT]);
-        $response = $this->actingAs($user, 'sanctum')->postJson('/api/orders',[]);
+        $response = $this->actingAs($user, 'sanctum')->postJson('/api/orders', []);
         $response->assertStatus(422)->assertJson([
             'success' => false,
-            'message' => 'The given data was invalid'
+            'message' => 'The given data was invalid',
         ]);
     }
 
@@ -85,10 +85,10 @@ class OrderTest extends TestCase
     public function test_user_with_invalid_role_cannot_create_order()
     {
         $user = User::factory()->create(['role' => UserRole::MANAGER]);
-        $response = $this->actingAs($user, 'sanctum')->postJson('/api/orders',[]);
+        $response = $this->actingAs($user, 'sanctum')->postJson('/api/orders', []);
         $response->assertStatus(403)->assertJson([
             'success' => false,
-            'message' => 'Forbidden. Not enough permissions'
+            'message' => 'Forbidden. Not enough permissions',
         ]);
     }
 }

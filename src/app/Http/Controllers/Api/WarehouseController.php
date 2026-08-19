@@ -5,24 +5,21 @@ namespace App\Http\Controllers\Api;
 use App\Contracts\WarehouseCatalogInterface;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use OpenApi\Attributes as OA;
 
 class WarehouseController extends Controller
 {
-    public function __construct(protected WarehouseCatalogInterface $service)
-    {
-    }
+    public function __construct(protected WarehouseCatalogInterface $service) {}
 
     #[OA\Get(
-        path: "/api/warehouses/catalog",
-        description: "Возвращает полный список складов с имеющимися остатками товаров. Данные обрабатываются по паттерну Cache-Aside через Redis",
-        summary: "Получение каталога складов с остатками товаров",
+        path: '/api/warehouses/catalog',
+        description: 'Возвращает полный список складов с имеющимися остатками товаров. Данные обрабатываются по паттерну Cache-Aside через Redis',
+        summary: 'Получение каталога складов с остатками товаров',
         tags: ['Warehouse'],
         responses: [
             new OA\Response(
                 response: 200,
-                description: "Каталог успешно получен",
+                description: 'Каталог успешно получен',
                 content: new OA\JsonContent(
                     properties: [
                         new OA\Property(
@@ -49,12 +46,12 @@ class WarehouseController extends Controller
                                     new OA\Property(
                                         property: 'name',
                                         type: 'string',
-                                        example: "Октябрьский"
+                                        example: 'Октябрьский'
                                     ),
                                     new OA\Property(
                                         property: 'address',
                                         type: 'string',
-                                        example: "г. Новосибирск, ул. Бориса Богаткова, д.17"
+                                        example: 'г. Новосибирск, ул. Бориса Богаткова, д.17'
                                     ),
                                     new OA\Property(
                                         property: 'stocks',
@@ -114,14 +111,14 @@ class WarehouseController extends Controller
                                             ],
                                             type: 'object'
                                         )
-                                    )
+                                    ),
                                 ],
                                 type: 'object'
                             )
-                        )
+                        ),
                     ]
                 )
-            )
+            ),
         ]
     )]
     public function index(): JsonResponse
@@ -130,11 +127,12 @@ class WarehouseController extends Controller
         $isCached = $this->service->hasCache();
         $catalog = $this->service->getCatalog();
         $executionTime = microtime(true) - $start;
+
         return new JsonResponse([
             'source' => $isCached ? 'Redis (Cache Hit)'
                 : 'PostgreSQL (Cache Miss)',
             'execution_time_ms' => round($executionTime * 1000, 2),
-            'data' => $catalog
+            'data' => $catalog,
         ]);
     }
 }
