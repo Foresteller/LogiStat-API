@@ -6,6 +6,7 @@
          failOnWarning="false"
          failOnRisky="false"
          stopOnFailure="false"
+         failOnDeprecation="false"
 >
     <testsuites>
         <testsuite name="Unit">
