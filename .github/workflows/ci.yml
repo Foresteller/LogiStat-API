@@ -58,6 +58,6 @@ jobs:
           DB_DATABASE: logistat-test
           DB_USERNAME: postgres
           DB_PASSWORD: secret_postgres
-          QUEUE_CONNECTION: redis
+          QUEUE_CONNECTION: sync
           REDIS_HOST: 127.0.0.1
         run: php artisan test --display-warnings
