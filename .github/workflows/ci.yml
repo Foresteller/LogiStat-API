@@ -48,18 +48,14 @@ jobs:
           php artisan key:generate --env=testing
       - name: Check Code Style
         run: vendor/bin/pint --test
-      - name: Create Storage Folder
-        run: mkdir -p storage/framework/{sessions,views,cache} storage/logs
       - name: Run Test Suite
         env:
-          APP_ENV: testing
-          APP_KEY: base64:8bW0L1P107eR2x3YZ4z5A6b7C8d9E0f1G2h3I4j5K6l7=
           DB_CONNECTION: pgsql
           DB_HOST: 127.0.0.1
           DB_PORT: 5432
           DB_DATABASE: logistat-test
           DB_USERNAME: postgres
           DB_PASSWORD: secret_postgres
-          QUEUE_CONNECTION: sync
+          QUEUE_CONNECTION: redis
           REDIS_HOST: 127.0.0.1
-        run: vendor/bin/phpunit
+        run: php artisan test
