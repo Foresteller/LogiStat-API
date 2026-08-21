@@ -7,14 +7,16 @@ and Docker.
 
 ## Tech Stack
 
-| **Backend:** | PHP 8.3, Laravel 11(Sanctum, Queues, Form Request) |
-| **Database:** | Postgres 15(транзакции, кастомные индексы, миграции и сиды) |
-| **Cache & Queue** | Redis(Асинхронный воркер обработки заказов) |
-| **Auth & Security** | Laravel Sanctum(Выдача и ревокация Bearer-токенов, Role-Based контроль доступа) |
-| **Containerization** | Docker, Docker Compose(Multi-stage сборка для prod, OPcache) |
-| **Testing:** | Pest/PHPUnit(Feature тесты с фейковыми очередями и данными в бд) |
-| **CI:** | GitHub Actions(Автоматический прогон тестов и хелсчеков для Postgres и Redis при pr и push, линтинг(pint) |
-| **API Spec:** | OpenAPI/Swagger(документация эндпоинтов) |
+| Компонент              | Технологии                                                                                                |
+|:-----------------------|:----------------------------------------------------------------------------------------------------------|
+| **Backend:**           | PHP 8.3, Laravel 11(Sanctum, Queues, Form Request)                                                        |
+| **Database:**          | Postgres 15(транзакции, кастомные индексы, миграции и сиды)                                               |
+| **Cache & Queue**      | Redis(Асинхронный воркер обработки заказов)                                                               |
+| **Auth & Security**    | Laravel Sanctum(Выдача и ревокация Bearer-токенов, Role-Based контроль доступа)                           |
+| **Containerization**   | Docker, Docker Compose(Multi-stage сборка для prod, OPcache)                                              |
+| **Testing:**           | Pest/PHPUnit(Feature тесты с фейковыми очередями и данными в бд)                                          |
+| **CI:**                | GitHub Actions(Автоматический прогон тестов и хелсчеков для Postgres и Redis при pr и push, линтинг(pint) |
+| **API Spec:**          | OpenAPI/Swagger(документация эндпоинтов)                                                                  |
 
 ### Установка
 
