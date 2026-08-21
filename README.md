@@ -19,8 +19,9 @@ and Docker.
 | **API Spec:**          | OpenAPI/Swagger(документация эндпоинтов)                                                                  |
 
 ### Установка
-
+``` bash
 git clone https://github.com/foresteller/LogiStat-API
 cd LogiStat-API
 cp .env.example .env
 docker compose up -d --build
+```
