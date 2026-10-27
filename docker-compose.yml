@@ -1,10 +1,10 @@
 version: "3.8"
 services:
     app:
-        #    build:
-        #      context: .
-        #      dockerfile: Dockerfile.prod
-        image: logistat-api:prod
+        build:
+            context: .
+            dockerfile: Dockerfile.prod
+
         volumes:
             - ./:/var/www
         container_name: logistat-app
@@ -49,7 +49,7 @@ services:
     queue-worker:
         build:
             context: .
-            dockerfile: docker/php/Dockerfile
+            dockerfile: Dockerfile.prod
         container_name: logistat_queue_worker
         networks:
             - logistat-network
