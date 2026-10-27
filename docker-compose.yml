@@ -5,6 +5,8 @@ services:
             context: .
             dockerfile: docker/php/Dockerfile
         container_name: logistat-app
+        volumes:
+            - ./:/var/www
         tty: true
         networks:
             - logistat-network
@@ -48,6 +50,8 @@ services:
             context: .
             dockerfile: docker/php/Dockerfile
         container_name: logistat_queue_worker
+        volumes:
+            - ./:/var/www
         networks:
             - logistat-network
         command: php /var/www/artisan queue:work --verbose --tries=3 --timeout=90
