@@ -22,6 +22,8 @@ and Docker.
 ``` bash
 git clone https://github.com/foresteller/LogiStat-API
 cd LogiStat-API
-cp .env.example .env
 docker compose up -d --build
+cp .env.example .env
+docker compose exec app php artisan key:generate
+docker compose exec app php artisan migrate
 ```
