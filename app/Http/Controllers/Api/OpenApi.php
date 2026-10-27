@@ -14,4 +14,10 @@ use OpenApi\Attributes as OA;
     url: 'http://localhost:8080',
     description: 'Local Docker Environment'
 )]
+#[OA\SecurityScheme(
+    securityScheme: 'bearerAuth',
+    type: 'http',
+    bearerFormat: 'Sanctum',
+    scheme: 'bearer'
+)]
 class OpenApi {}
