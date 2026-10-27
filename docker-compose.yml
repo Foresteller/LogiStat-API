@@ -3,7 +3,7 @@ services:
     app:
         build:
             context: .
-            dockerfile: Dockerfile.prod
+            dockerfile: docker/php/Dockerfile
         container_name: logistat-app
         tty: true
         networks:
@@ -46,7 +46,7 @@ services:
     queue-worker:
         build:
             context: .
-            dockerfile: Dockerfile.prod
+            dockerfile: docker/php/Dockerfile
         container_name: logistat_queue_worker
         networks:
             - logistat-network
