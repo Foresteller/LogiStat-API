@@ -130,6 +130,7 @@ class AuthController
             ],
         ]);
     }
+
     #[OA\Post(
         path: '/api/logout',
         description: 'Отзывает текущий Bearer-токен пользователя.',
@@ -161,7 +162,6 @@ class AuthController
             ),
         ]
     )]
-
     public function logout(Request $request): JsonResponse
     {
         $request->user()->currentAccessToken()->delete();
@@ -191,7 +191,25 @@ class AuthController
                         ),
                         new OA\Property(
                             property: 'data',
-                            ref: '#/components/schemas/UserResource'
+                            properties: [
+                                new OA\Property(
+                                    property: 'id',
+                                    type: 'integer',
+                                    example: 1
+                                ),
+                                new OA\Property(
+                                    property: 'name',
+                                    type: 'string',
+                                    example: 'Ivan'
+                                ),
+                                new OA\Property(
+                                    property: 'email',
+                                    type: 'string',
+                                    format: 'email',
+                                    example: 'ivan@example.com'
+                                ),
+                            ],
+                            type: 'object'
                         ),
                     ]
                 )
@@ -202,7 +220,6 @@ class AuthController
             ),
         ]
     )]
-
     public function me(Request $request): JsonResponse
     {
         return new JsonResponse([

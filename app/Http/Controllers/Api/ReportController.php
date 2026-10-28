@@ -55,7 +55,6 @@ class ReportController extends Controller
             ),
         ]
     )]
-
     public function getTopProducts(ReportRepository $repository): JsonResponse
     {
         $report = $repository->findTopProducts();
